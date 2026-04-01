@@ -1,18 +1,18 @@
-name: 🎮 XServer GAME 自动续期
-
+name: XServerGame-Renew
 on:
-  schedule:
-    # 每天北京时间 08:00 运行（UTC 00:00）
-    - cron: '0 0 * * *'
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   renew:
-    name: 🔄 执行续期
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
+      - name: 📥 拉取公库
+        uses: actions/checkout@v4
+
       - name: 📥 拉取私库脚本
         uses: actions/checkout@v4
         with:
@@ -21,7 +21,7 @@ jobs:
           path: private
 
       - name: 📂 移动脚本到工作目录
-        run: mv private/renew.py renew.py
+        run: mv private/* ./
 
       - name: 🟢 安装 Node.js
         uses: actions/setup-node@v4
@@ -60,7 +60,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: failure-screenshots
+          name: failure-screenshots-${{ github.run_id }}
           path: test-results/
           retention-days: 7
 
